@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {BrowserRouter, Route, withRouter}  from 'react-router-dom';
 import './index.css';
 import AuthorQuiz from './AuthorQuiz';
 import registerServiceWorker from './registerServiceWorker';
 import {shuffle, sample} from 'underscore';
+import AddAutherForm from './AddAuthorForm';
 
-{/* E:\reactjs\authorquiz\public\images\authors\marktwain.jpg */}
+
 const authors = [
     {
         name: 'Mark Twain',
@@ -52,9 +54,45 @@ function getTurnData(authors) {
     }
 }
 
-const state = {
-    turnData: getTurnData(authors)
-};
+function resetState(){
+    return {
+        turnData: getTurnData(authors),
+        highlight: ''
+    };
+}
 
-ReactDOM.render(<AuthorQuiz {...state}/>, document.getElementById('root'));
+let state = resetState();
+
+function onAnswerSelected(answer){
+    const isCorrect = state.turnData.author.books.some((book) => book === answer);
+    state.highlight = isCorrect ? 'correct' : 'wrong';
+    render();
+}
+
+function App() {
+    return <AuthorQuiz {...state} 
+    onAnswerSelected={onAnswerSelected} 
+    onContinue={() => {
+        state = resetState();
+        render();
+    }}/>;
+}
+
+const AuthorWrapper = withRouter(({ history }) => 
+    <AddAutherForm onAddAuthor={(auther) => {
+        authors.push(auther);
+        history.push('/');
+    }} />
+);
+
+function render(){
+    ReactDOM.render(<BrowserRouter>
+        <React.Fragment>
+            <Route exact path="/" component={App}/>
+            <Route path="/add" component={AuthorWrapper}/>
+        </React.Fragment>
+    </BrowserRouter>, document.getElementById('root'));
+}
+render();
+
 registerServiceWorker();
