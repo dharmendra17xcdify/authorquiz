@@ -88,7 +88,7 @@ function mapDispatchToProps(dispatch){
       dispatch({ type: 'ANSWER__SELECTED', answer })
     },
     onContinue: () => {
-      dispatch: ({ type: 'CONTINUE' })
+      dispatch({ type: 'CONTINUE', })
     }
   };
 }
