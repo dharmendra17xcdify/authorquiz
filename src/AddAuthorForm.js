@@ -22,7 +22,7 @@ class AuthorForm extends React.Component {
         });
     }
     handleSubmit(event){
-        event.preventDefault();
+        //event.preventDefault();
         this.props.onAddAuthor(this.state);
     }
     onFieldChange(event) {
